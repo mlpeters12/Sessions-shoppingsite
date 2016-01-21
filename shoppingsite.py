@@ -20,6 +20,7 @@ app.secret_key = "marvelpie"
 
 app.secret_key = 'this-should-be-something-unguessable'
 
+
 # Normally, if you refer to an undefined variable in a Jinja template,
 # Jinja silently ignores this. This makes debugging difficult, so we'll
 # set an attribute of the Jinja environment that says to make this an
@@ -61,25 +62,38 @@ def show_melon(melon_id):
 def shopping_cart():
     """Display content of shopping cart."""
 
-    # TODO: Display the contents of the shopping cart.
+    order_total = 0
 
-    # The logic here will be something like:
-    #
-    # - get the list-of-ids-of-melons from the session cart
-    # - loop over this list:
-    #   - keep track of information about melon types in the cart
-    #   - keep track of the total amt ordered for a melon-type
-    #   - keep track of the total amt of the entire order
-    # - hand to the template the total order cost and the list of melon types
+    melon_cart_ids = session.get("cart",[])
 
-    # session["cart"] =[]
-    # melon = request.args.
-    # price =
-    # quantity =
-    # total =
+    cart={}
+    
+    for melon_id in melon_cart_ids:
+        if melon_id in cart:
+            melon_info =cart[melon_id]
+        else:
+            melon_type=melons.get_by_id(melon_id)
+            melon_info=cart[melon_id] = {
+                "melon_name":melon_type.common_name,
+                "melon_price":melon_type.price,
+                "qty":0,
+                "total_cost":0
+            }
+
+        melon_info["qty"] += 1
+        melon_info["total_cost"] += melon_info["melon_price"]
+
+        order_total += melon_info["melon_price"]
+
+    cart = cart.values()
 
 
-    return render_template("cart.html")
+
+    return render_template("cart.html",
+                            cart=cart,
+                            order_total=order_total
+                            )
+    
 
 
 @app.route("/add_to_cart/<int:id>")
@@ -96,7 +110,16 @@ def add_to_cart(id):
     #
     # - add the id of the melon they bought to the cart in the session
 
-    return "Oops! This needs to be implemented!"
+    if "cart" in session:
+        cart = session["cart"]
+    else:
+        cart = session["cart"] =[]
+
+    cart.append(id)
+
+    flash("You've added a melon to your cart!!!")
+
+    return redirect("/cart")
 
 
 @app.route("/login", methods=["GET"])
