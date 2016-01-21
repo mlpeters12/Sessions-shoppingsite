@@ -72,6 +72,13 @@ def shopping_cart():
     #   - keep track of the total amt of the entire order
     # - hand to the template the total order cost and the list of melon types
 
+    # session["cart"] =[]
+    # melon = request.args.
+    # price =
+    # quantity =
+    # total =
+
+
     return render_template("cart.html")
 
 
