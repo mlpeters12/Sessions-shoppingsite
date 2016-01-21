@@ -18,8 +18,6 @@ app.secret_key = "marvelpie"
 
 # Need to use Flask sessioning features
 
-app.secret_key = 'this-should-be-something-unguessable'
-
 
 # Normally, if you refer to an undefined variable in a Jinja template,
 # Jinja silently ignores this. This makes debugging difficult, so we'll
@@ -103,12 +101,6 @@ def add_to_cart(id):
     When a melon is added to the cart, redirect browser to the shopping cart
     page and display a confirmation message: 'Successfully added to cart'.
     """
-
-    # TODO: Finish shopping cart functionality
-
-    # The logic here should be something like:
-    #
-    # - add the id of the melon they bought to the cart in the session
 
     if "cart" in session:
         cart = session["cart"]
